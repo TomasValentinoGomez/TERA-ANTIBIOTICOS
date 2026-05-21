@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TERAPÉUTICA — PREGUNTAS DE ANTIBIÓTICOS</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060610;
+  --surface: #0e0e1e;
+  --surface2: #14142a;
+  --surface3: #1a1a32;
+  --accent: #00e5ff;
+  --accent2: #ff4d8f;
+  --accent3: #7cff6b;
+  --accent4: #ffd166;
+  --accent5: #b57bff;
+  --accent6: #ff8c42;
+  --text: #e8e8f8;
+  --text-dim: #6868a0;
+  --border: #1e1e40;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.7;font-size:15px;min-height:100vh;}
+
+/* HEADER */
+header{
+  background:linear-gradient(135deg,#06061a 0%,#12062a 50%,#060612 100%);
+  border-bottom:2px solid var(--accent);
+  padding:3rem 2rem 2.5rem;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+header::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,transparent,transparent 50px,rgba(0,229,255,.015) 50px,rgba(0,229,255,.015) 51px);
+}
+header::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(0,229,255,.08),transparent 70%);
+}
+.header-badge{
+  font-family:'Space Mono',monospace;font-size:.65rem;
+  color:var(--accent);letter-spacing:5px;text-transform:uppercase;
+  margin-bottom:.75rem;position:relative;z-index:1;
+}
+header h1{
+  font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.8rem);font-weight:800;
+  background:linear-gradient(135deg,var(--accent),var(--accent5),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  position:relative;z-index:1;line-height:1.1;margin-bottom:.5rem;
+}
+header p{
+  font-size:.95rem;color:var(--text-dim);position:relative;z-index:1;
+  font-family:'Space Mono',monospace;
+}
+
+/* STATS BAR */
+.stats-bar{
+  display:flex;gap:1rem;padding:1.25rem 2rem;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  flex-wrap:wrap;justify-content:center;
+}
+.stat-pill{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:50px;padding:.4rem 1.2rem;
+  font-family:'Space Mono',monospace;font-size:.72rem;
+  color:var(--text-dim);
+}
+.stat-pill span{color:var(--accent);font-weight:700;}
+
+/* TABS */
+.tabs-container{
+  position:sticky;top:0;z-index:100;
+  background:rgba(6,6,16,.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:.75rem 1.5rem;
+  overflow-x:auto;white-space:nowrap;
+}
+.tabs{display:inline-flex;gap:.5rem;}
+.tab{
+  border:1px solid var(--border);background:transparent;
+  border-radius:8px;padding:.5rem 1rem;
+  font-size:.8rem;cursor:pointer;color:var(--text-dim);
+  font-family:'DM Sans',sans-serif;font-weight:500;
+  transition:all .2s;white-space:nowrap;
+}
+.tab:hover{border-color:var(--accent);color:var(--accent);}
+.tab.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:700;}
+
+/* MAIN LAYOUT */
+.main{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+
+/* SECTION */
+.section{display:none;}
+.section.active{display:block;}
+
+.section-header{
+  margin-bottom:2rem;padding-bottom:1rem;
+  border-bottom:2px solid var(--border);
+}
+.section-title{
+  font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;
+  margin-bottom:.25rem;
+}
+.section-sub{font-size:.8rem;color:var(--text-dim);font-family:'Space Mono',monospace;}
+
+/* QUESTION CARDS */
+.q-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;margin-bottom:1.25rem;overflow:hidden;
+  transition:border-color .2s;
+}
+.q-card:hover{border-color:var(--border);}
+
+.q-header{
+  padding:1.25rem 1.5rem;cursor:pointer;
+  display:flex;align-items:flex-start;gap:1rem;
+  user-select:none;
+}
+.q-num{
+  font-family:'Space Mono',monospace;font-size:.7rem;
+  color:var(--text-dim);min-width:28px;margin-top:2px;
+}
+.q-text{
+  flex:1;font-size:.95rem;font-weight:500;line-height:1.6;
+  color:var(--text);
+}
+.q-arrow{
+  font-size:.8rem;color:var(--text-dim);
+  transition:transform .3s;margin-top:2px;min-width:16px;
+}
+.q-card.open .q-arrow{transform:rotate(180deg);}
+
+.q-answer{
+  display:none;padding:0 1.5rem 1.5rem 1.5rem;
+  border-top:1px solid var(--border);
+}
+.q-card.open .q-answer{display:block;}
+
+.answer-content{
+  padding-top:1.25rem;
+  font-size:.9rem;line-height:1.8;color:#c8c8e8;
+}
+.answer-content strong{color:var(--accent);}
+.answer-content .highlight{
+  background:rgba(0,229,255,.06);border-left:3px solid var(--accent);
+  padding:.75rem 1rem;border-radius:0 8px 8px 0;margin:.75rem 0;
+  font-size:.88rem;
+}
+.answer-content .warn{
+  background:rgba(255,77,143,.06);border-left:3px solid var(--accent2);
+  padding:.75rem 1rem;border-radius:0 8px 8px 0;margin:.75rem 0;
+  font-size:.88rem;
+}
+.answer-content .success{
+  background:rgba(124,255,107,.06);border-left:3px solid var(--accent3);
+  padding:.75rem 1rem;border-radius:0 8px 8px 0;margin:.75rem 0;
+  font-size:.88rem;
+}
+
+/* BADGE */
+.badge{
+  display:inline-block;padding:.2rem .7rem;border-radius:50px;
+  font-size:.65rem;font-family:'Space Mono',monospace;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:.75rem;
+}
+.badge-beta{background:rgba(0,229,255,.15);color:var(--accent);}
+.badge-gpos{background:rgba(181,123,255,.15);color:var(--accent5);}
+.badge-gneg{background:rgba(255,209,102,.15);color:var(--accent4);}
+.badge-gen{background:rgba(255,140,66,.15);color:var(--accent6);}
+.badge-tbc{background:rgba(124,255,107,.15);color:var(--accent3);}
+.badge-ea{background:rgba(255,77,143,.15);color:var(--accent2);}
+
+/* TABLE */
+.ans-table{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.83rem;}
+.ans-table th{
+  background:var(--surface2);padding:.6rem .9rem;
+  text-align:left;color:var(--accent);
+  font-family:'Space Mono',monospace;font-size:.7rem;
+  border-bottom:2px solid var(--border);
+}
+.ans-table td{
+  padding:.6rem .9rem;border-bottom:1px solid var(--border);
+  vertical-align:top;
+}
+.ans-table tr:last-child td{border-bottom:none;}
+.ans-table tr:hover td{background:rgba(255,255,255,.02);}
+
+/* PROGRESS */
+.progress-bar{
+  height:3px;background:var(--border);border-radius:3px;
+  margin-bottom:2rem;overflow:hidden;
+}
+.progress-fill{
+  height:100%;background:linear-gradient(90deg,var(--accent),var(--accent5));
+  border-radius:3px;transition:width .3s;
+}
+
+/* REVEAL BTN */
+.reveal-btn{
+  background:transparent;border:1px solid var(--border);
+  border-radius:8px;padding:.5rem 1.2rem;
+  color:var(--text-dim);font-size:.8rem;cursor:pointer;
+  font-family:'DM Sans',sans-serif;margin-top:.5rem;
+  transition:all .2s;
+}
+.reveal-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* REGLA BOX */
+.regla{
+  background:linear-gradient(135deg,rgba(0,229,255,.05),rgba(181,123,255,.05));
+  border:1px solid rgba(0,229,255,.2);
+  border-radius:10px;padding:.9rem 1.1rem;margin:.75rem 0;
+  font-family:'Space Mono',monospace;font-size:.78rem;
+  color:var(--accent);
+}
+.regla::before{content:'💡 REGLA: ';font-weight:700;}
+
+/* FOOTER */
+footer{
+  text-align:center;padding:2rem;
+  font-family:'Space Mono',monospace;font-size:.7rem;
+  color:var(--text-dim);border-top:1px solid var(--border);
+  margin-top:3rem;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-badge">Terapéutica — Fundación Barceló</div>
+  <h1>PREGUNTAS DE ANTIBIÓTICOS</h1>
+  <p>Betalactámicos · Gram+ · Gram- · TBC · Efectos Adversos · Generales</p>
+</header>
+
+<div class="stats-bar">
+  <div class="stat-pill">Total: <span id="total-count">0</span> preguntas</div>
+  <div class="stat-pill">Betalactámicos: <span>18</span></div>
+  <div class="stat-pill">Gram+: <span>16</span></div>
+  <div class="stat-pill">Gram-: <span>12</span></div>
+  <div class="stat-pill">TBC: <span>8</span></div>
+  <div class="stat-pill">Efectos Adversos: <span>10</span></div>
+  <div class="stat-pill">Generales: <span>10</span></div>
+</div>
+
+<div class="tabs-container">
+  <div class="tabs">
+    <button class="tab active" onclick="showSection('generales')">⭐ GENERALES</button>
+    <button class="tab" onclick="showSection('beta')">💊 BETALACTÁMICOS</button>
+    <button class="tab" onclick="showSection('gpos')">🦠 GRAM+</button>
+    <button class="tab" onclick="showSection('gneg')">🔬 GRAM-</button>
+    <button class="tab" onclick="showSection('tbc')">🫁 TBC</button>
+    <button class="tab" onclick="showSection('ea')">⚠️ EFECTOS ADVERSOS</button>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════════════════════════════ -->
+<!--           GENERALES                    -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section active" id="section-generales">
+  <div class="section-header">
+    <div class="section-title">⭐ PREGUNTAS GENERALES E IMPORTANTES</div>
+    <div class="section-sub">Las preguntas más frecuentes e integradoras del oral</div>
+  </div>
+
+  <div id="q-generales"></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!--           BETALACTÁMICOS               -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="section-beta">
+  <div class="section-header">
+    <div class="section-title">💊 BETALACTÁMICOS</div>
+    <div class="section-sub">Penicilinas · Cefalosporinas · Carbapenems · Monobactams · IBL</div>
+  </div>
+  <div id="q-beta"></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!--           GRAM+                        -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="section-gpos">
+  <div class="section-header">
+    <div class="section-title">🦠 GRAM+ — VANCOMICINA · TETRACICLINAS · MACRÓLIDOS · CLINDAMICINA · LINEZOLID</div>
+    <div class="section-sub">Antibióticos con espectro predominante Gram+</div>
+  </div>
+  <div id="q-gpos"></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!--           GRAM-                        -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="section-gneg">
+  <div class="section-header">
+    <div class="section-title">🔬 GRAM- — QUINOLONAS · AMINOGLUCÓSIDOS · TMP-SMX · CLORANFENICOL</div>
+    <div class="section-sub">Antibióticos con espectro predominante Gram-</div>
+  </div>
+  <div id="q-gneg"></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!--           TBC                          -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="section-tbc">
+  <div class="section-header">
+    <div class="section-title">🫁 TUBERCULOSIS</div>
+    <div class="section-sub">RIPE · Resistencia · TBC Latente vs Activa</div>
+  </div>
+  <div id="q-tbc"></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!--           EFECTOS ADVERSOS             -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="section-ea">
+  <div class="section-header">
+    <div class="section-title">⚠️ EFECTOS ADVERSOS</div>
+    <div class="section-sub">Repaso integrador de efectos adversos por grupo</div>
+  </div>
+  <div id="q-ea"></div>
+</div>
+
+</div><!-- end main -->
+
+<footer>TOMAS VALENTINO GOMEZ · TERAPÉUTICA ERA 1 · FUNDACIÓN BARCELÓ 2026</footer>
+
+<script>
+const data = {
+  generales: [
+    {
+      badge: 'badge-gen',
+      q: '¿Cómo clasificás los antibióticos según su mecanismo de acción? Mencioname los grandes grupos.',
+      a: `Los antibióticos se clasifican en 5 grandes grupos según su mecanismo:
+      <table class="ans-table">
+        <tr><th>MECANISMO</th><th>ANTIBIÓTICOS</th></tr>
+        <tr><td><strong>Inhiben la pared (PBP)</strong></td><td>Betalactámicos</td></tr>
+        <tr><td><strong>Inhiben la pared (D-Ala-D-Ala)</strong></td><td>Vancomicina</td></tr>
+        <tr><td><strong>Inhiben ribosoma 30S</strong></td><td>Tetraciclinas, Aminoglucósidos</td></tr>
+        <tr><td><strong>Inhiben ribosoma 50S</strong></td><td>Macrólidos, Clindamicina, Linezolid, Cloranfenicol</td></tr>
+        <tr><td><strong>Inhiben topoisomerasas</strong></td><td>Quinolonas</td></tr>
+        <tr><td><strong>Inhiben folatos</strong></td><td>TMP-SMX</td></tr>
+      </table>
+      <div class="regla">Inhibición de pared + Ribosoma 30S/50S + Topoisomerasa + Folatos + D-Ala-D-Ala</div>`
+    },
+    {
+      badge: 'badge-gen',
+      q: '¿Cuáles son bactericidas y cuáles bacteriostáticos? Mencioname al menos 4 de cada uno.',
+      a: `<table class="ans-table">
+        <tr><th>BACTERICIDAS</th><th>BACTERIOSTÁTICOS</th></tr>
+        <tr><td>Betalactámicos</td><td>Macrólidos (dosis bajas)</td></tr>
+        <tr><td>Vancomicina</td><td>Clindamicina</td></tr>
+        <tr><td>Aminoglucósidos</td><td>Linezolid</td></tr>
+        <tr><td>Quinolonas</td><td>Cloranfenicol</td></tr>
+        <tr><td>TMP-SMX</td><td>Tetraciclinas</td></tr>
+      </table>
+      <div class="regla">BVAQT = Bactericidas: Betalactámicos + Vancomicina + Aminoglucósidos + Quinolonas + TMP-SMX</div>`
+    },
+    {
+      badge: 'badge-gen',
+      q: '¿Qué antibióticos cubren Pseudomonas? Mencioname al menos 4.',
+      a: `<table class="ans-table">
+        <tr><th>GRUPO</th><th>FÁRMACO</th></tr>
+        <tr><td>Cefalosporinas</td><td>Ceftazidima (3ra gen), Cefepime (4ta gen)</td></tr>
+        <tr><td>Penicilinas</td><td>Piperacilina-Tazobactam</td></tr>
+        <tr><td>Carbapenems</td><td>Imipenem, Meropenem (NO Ertapenem)</td></tr>
+        <tr><td>Monobactams</td><td>Aztreonam</td></tr>
+        <tr><td>Quinolonas</td><td>Ciprofloxacina</td></tr>
+        <tr><td>Aminoglucósidos</td><td>Gentamicina, Amikacina</td></tr>
+      </table>
+      <div class="warn">⚠️ ERTAPENEM es el único carbapenem SIN cobertura anti-Pseudomonas</div>`
+    },
+    {
+      badge: 'badge-gen',
+      q: '¿Qué antibióticos cubren anaerobios?',
+      a: `<table class="ans-table">
+        <tr><th>FÁRMACO</th><th>POTENCIA</th></tr>
+        <tr><td><strong>Metronidazol</strong></td><td>Primera línea — el mejor</td></tr>
+        <tr><td>Clindamicina</td><td>Muy bueno, especialmente Gram+ anaerobios</td></tr>
+        <tr><td>Carbapenems (Imipenem/Meropenem)</td><td>Muy buenos</td></tr>
+        <tr><td>Piperacilina-Tazobactam</td><td>Bueno</td></tr>
+        <tr><td>Moxifloxacina (4ta gen)</td><td>Única quinolona con cobertura anaerobia</td></tr>
+        <tr><td>Cloranfenicol</td><td>Cubre anaerobios</td></tr>
+      </table>
+      <div class="regla">Anaerobios → Metronidazol primero, Clindamicina segundo, Carbapenems tercero</div>`
+    },
+    {
+      badge: 'badge-gen',
+      q: '¿Qué antibióticos cubren gérmenes atípicos (Mycoplasma, Chlamydia, Legionella)?',
+      a: `<table class="ans-table">
+        <tr><th>FÁRMACO</th><th>DETALLE</th></tr>
+        <tr><td><strong>Macrólidos</strong></td><td>Primera línea — Azitromicina, Claritromicina</td></tr>
+        <tr><td>Quinolonas respiratorias</td><td>Levofloxacina, Moxifloxacina</td></tr>
+        <tr><td>Tetraciclinas</td><td>Doxiciclina — alternativa clásica</td></tr>
+      </table>
+      <div class="warn">⚠️ Betalactámicos NO cubren atípicos → no tienen pared de peptidoglucano</div>`
+    },
+    {
+      badge: 'badge-gen',
+      q: 'Mencioname un antibiótico para cada situación clínica clave: MRSA, C. difficile, Pseudomonas, Atípicos, Anaerobios, TBC, PCP en VIH, Sífilis, Sífilis en alérgico a penicilina.',
+      a: `<table class="ans-table">
+        <tr><th>SITUACIÓN</th><th>PRIMERA LÍNEA</th><th>ALTERNATIVAS</th></tr>
+        <tr><td>MRSA</td><td><strong>Vancomicina</strong></td><td>Linezolid, Ceftarolina</td></tr>
+        <tr><td>C. difficile leve</td><td><strong>Metronidazol VO</strong></td><td>Vancomicina VO (grave)</td></tr>
+        <tr><td>Pseudomonas</td><td><strong>Piperacilina-Tazobactam</strong></td><td>Ceftazidima, Cipro, Amino</td></tr>
+        <tr><td>Atípicos</td><td><strong>Azitromicina</strong></td><td>Doxiciclina, Levofloxacina</td></tr>
+        <tr><td>Anaerobios</td><td><strong>Metronidazol</strong></td><td>Clindamicina</td></tr>
+        <tr><td>TBC</td><td><strong>HRZE × 2m → HR × 4m</strong></td><td>Quinolonas en MDR-TB</td></tr>
+        <tr><td>PCP en VIH</td><td><strong>TMP-SMX</strong></td><td>Pentamidina</td></tr>
+        <tr><td>Sífilis</td><td><strong>Penicilina G Benzatínica IM</strong></td><td>Doxiciclina (no embarazada)</td></tr>
+        <tr><td>Sífilis + alérgico</td><td><strong>Doxiciclina</strong></td><td>Desensibilización (embarazada)</td></tr>
+      </table>`
+    },
+    {
+      badge: 'badge-gen',
+      q: '¿Qué antibióticos están contraindicados en el embarazo y por qué?',
+      a: `<table class="ans-table">
+        <tr><th>ANTIBIÓTICO</th><th>POR QUÉ</th></tr>
+        <tr><td><strong>Tetraciclinas</strong></td><td>Depósito en huesos y dientes del feto</td></tr>
+        <tr><td><strong>Quinolonas</strong></td><td>Daño en cartílagos fetales</td></tr>
+        <tr><td><strong>Aminoglucósidos</strong></td><td>Ototoxicidad fetal → sordera congénita</td></tr>
+        <tr><td><strong>Cloranfenicol</strong></td><td>Síndrome gris del RN</td></tr>
+        <tr><td><strong>TMP-SMX</strong></td><td>Interfiere con folatos → defectos del tubo neural</td></tr>
+        <tr><td><strong>Metronidazol</strong></td><td>Contraindicado en 1er trimestre</td></tr>
+      </table>
+      <div class="success">✅ SEGUROS EN EMBARAZO: Penicilinas, Cefalosporinas, Macrólidos, Clindamicina</div>
+      <div class="regla">Embarazada → Betalactámicos y Macrólidos son tus amigos</div>`
+    },
+    {
+      badge: 'badge-gen',
+      q: '¿Qué antibióticos inhiben el CYP450, cuál lo induce y qué consecuencias tiene?',
+      a: `<table class="ans-table">
+        <tr><th>FÁRMACO</th><th>EFECTO</th><th>CONSECUENCIA</th></tr>
+        <tr><td>Eritromicina</td><td>Inhibe CYP3A4</td><td>↑ niveles Warfarina, Estatinas, Digoxina</td></tr>
+        <tr><td>Claritromicina</td><td>Inhibe CYP3A4</td><td>Igual que Eritromicina</td></tr>
+        <tr><td>Azitromicina</td><td>No inhibe</td><td>Menos interacciones</td></tr>
+        <tr><td><strong>Rifampicina</strong></td><td><strong>INDUCE CYP450</strong></td><td>↓ niveles Anticonceptivos, Warfarina, ARV</td></tr>
+        <tr><td>Metronidazol</td><td>Inhibe CYP2C9</td><td>↑ niveles Warfarina → sangrado</td></tr>
+      </table>
+      <div class="regla">Eritro/Claritro INHIBEN → suben niveles | Rifampicina INDUCE → baja niveles</div>`
+    },
+    {
+      badge: 'badge-gen',
+      q: 'NAC (Neumonía Adquirida en la Comunidad) — ¿qué antibiótico usás según la situación?',
+      a: `<table class="ans-table">
+        <tr><th>SITUACIÓN</th><th>TRATAMIENTO</th></tr>
+        <tr><td>NAC leve, sin comorbilidades, ambulatorio</td><td><strong>Amoxicilina o Azitromicina</strong></td></tr>
+        <tr><td>NAC con comorbilidades, ambulatorio</td><td><strong>Amoxicilina-Clavulánico + Azitromicina</strong></td></tr>
+        <tr><td>NAC hospitalizado</td><td><strong>Ceftriaxona + Azitromicina</strong></td></tr>
+        <tr><td>NAC grave (UCI)</td><td><strong>Betalactámico + Macrólido o Quinolona</strong></td></tr>
+        <tr><td>NAC + alérgico a penicilina (anafilaxia)</td><td><strong>Levofloxacina o Moxifloxacina</strong></td></tr>
+      </table>
+      <div class="warn">⚠️ Aztreonam NO sirve para NAC → solo cubre Gram- aerobios</div>`
+    },
+    {
+      badge: 'badge-gen',
+      q: '¿Qué antibióticos son nefrotóxicos? ¿Qué combinación es especialmente peligrosa?',
+      a: `<table class="ans-table">
+        <tr><th>FÁRMACO</th><th>MECANISMO</th></tr>
+        <tr><td><strong>Aminoglucósidos</strong></td><td>Acumulación en túbulo proximal → IRA</td></tr>
+        <tr><td><strong>Vancomicina</strong></td><td>Daño tubular directo</td></tr>
+        <tr><td>TMP-SMX</td><td>Cristaluria → obstrucción</td></tr>
+      </table>
+      <div class="warn">⚠️ COMBINACIÓN MÁS PELIGROSA: Vancomicina + Aminoglucósidos → doble nefrotoxicidad sinérgica</div>
+      <div class="regla">Amino + Vanco = riñones en peligro</div>`
+    }
+  ],
+
+  beta: [
+    {
+      badge: 'badge-beta',
+      q: '¿Cuál es el mecanismo de acción de los betalactámicos y por qué son bactericidas?',
+      a: `Se unen a las <strong>PBP (Proteínas de Unión a Penicilinas)</strong>, que son transpeptidasas que forman el peptidoglucano de la pared bacteriana. Al inhibir las PBP → no se forma la pared → <strong>lisis osmótica</strong> → bactericidas.
+      <div class="highlight">Son <strong>TIEMPO-DEPENDIENTES</strong> → lo que importa es el tiempo que la concentración está por encima de la CMI (Concentración Mínima Inhibitoria)</div>`
+    },
+    {
+      badge: 'badge-beta',
+      q: '¿Cuál es el mecanismo de resistencia más importante a betalactámicos y cómo se combate?',
+      a: `El mecanismo más importante es la producción de <strong>β-lactamasas</strong> → enzimas que rompen el anillo β-lactámico.
+      <br><br>Se combate con <strong>Inhibidores de β-lactamasa (IBL)</strong>:
+      <table class="ans-table">
+        <tr><th>BETALACTÁMICO</th><th>IBL</th></tr>
+        <tr><td>Amoxicilina</td><td>Ácido Clavulánico</td></tr>
+        <tr><td>Ampicilina</td><td>Sulbactam</td></tr>
+        <tr><td>Piperacilina</td><td>Tazobactam</td></tr>
+      </table>
+      <div class="warn">⚠️ Los IBL NO tienen actividad antibiótica propia — solo protegen al compañero</div>
+      <div class="regla">Otros mecanismos de resistencia: alteración de PBP (MRSA), bombas de eflujo, alteración de porinas (Gram-)</div>`
+    },
+    {
+      badge: 'badge-beta',
+      q: 'Clasificame las penicilinas en grupos con un ejemplo y espectro de cada uno.',
+      a: `<table class="ans-table">
+        <tr><th>GRUPO</th><th>EJEMPLO</th><th>ESPECTRO</th></tr>
+        <tr><td>Naturales</td><td>Penicilina G (EV), Penicilina V (VO)</td><td>Cocos Gram+, Espiroquetas (Treponema)</td></tr>
+        <tr><td>Aminopenicilinas</td><td>Amoxicilina, Ampicilina</td><td>+ Gram- (H. influenzae, Listeria, E. coli)</td></tr>
+        <tr><td>Antiestafilocóccicas</td><td>Oxacilina, Dicloxacilina</td><td>MSSA (Staph sensible a meticilina)</td></tr>
+        <tr><td>Carboxipenicilinas</td><td>Carbenicilina, Ticarcilina</td><td>Pseudomonas</td></tr>
+        <tr><td>Ureidopenicilinas</td><td>Piperacilina</td><td>Pseudomonas + anaerobios</td></tr>
+      </table>`
+    },
+    {
+      badge: 'badge-beta',
+      q: '¿Cuándo usás Penicilina G Benzatínica vs Penicilina G Cristalina? ¿Por qué vía?',
+      a: `<table class="ans-table">
+        <tr><th></th><th>CRISTALINA</th><th>BENZATÍNICA</th></tr>
+        <tr><td>Vía</td><td><strong>Intravenosa</strong></td><td><strong>Intramuscular</strong></td></tr>
+        <tr><td>Vida media</td><td>Corta (c/4-6hs)</td><td>Muy larga (2-4 semanas)</td></tr>
+        <tr><td>Uso</td><td>Meningitis, Endocarditis, infecciones graves</td><td>Sífilis, Profilaxis fiebre reumática</td></tr>
+      </table>
+      <div class="regla">Benzatínica = IM, dosis única. Cristalina = EV, picos altos y rápidos</div>`
+    },
+    {
+      badge: 'badge-beta',
+      q: 'Clasificame las cefalosporinas por generaciones con ejemplos y espectro.',
+      a: `<table class="ans-table">
+        <tr><th>GENERACIÓN</th><th>EJEMPLO</th><th>ESPECTRO CLAVE</th></tr>
+        <tr><td>1ra</td><td>Cefalexina, <strong>Cefazolina</strong></td><td>Gram+ — profilaxis quirúrgica</td></tr>
+        <tr><td>2da</td><td>Cefuroxima, Cefoxitina</td><td>+ Gram- (H. influenzae)</td></tr>
+        <tr><td>3ra</td><td>Ceftriaxona, <strong>Ceftazidima</strong></td><td>Gram- — meningitis, anti-Pseudomonas (ceftazidima)</td></tr>
+        <tr><td>4ta</td><td>Cefepime</td><td>Gram+ y Gram- + Pseudomonas</td></tr>
+        <tr><td>5ta</td><td>Ceftarolina</td><td>+ MRSA</td></tr>
+      </table>
+      <div class="regla">A mayor generación → más Gram-, menos Gram+ (hasta 5ta que recupera MRSA)</div>`
+    },
+    {
+      badge: 'badge-beta',
+      q: '¿Qué tiene de especial la Ceftriaxona respecto a todas las otras cefalosporinas?',
+      a: `Es la única cefalosporina con eliminación <strong>biliar + renal</strong> (las demás solo renal).
+      <div class="warn">⚠️ Por eliminación biliar puede precipitar → <strong>PSEUDOCOLELITIASIS</strong> → dolor en hipocondrio derecho → reversible al suspender</div>
+      <strong>Usos estrella:</strong> Meningitis, NAC, Gonorrea, Sífilis (alternativa)
+      <br>Vida media larga → se puede dar <strong>una vez al día</strong>`
+    },
+    {
+      badge: 'badge-beta',
+      q: '¿Hay reactividad cruzada entre penicilinas y cefalosporinas? ¿Qué implica clínicamente?',
+      a: `Sí, hay reactividad cruzada <strong>parcial ~10%</strong> (comparten el anillo β-lactámico).
+      <div class="highlight">Si la alergia fue <strong>LEVE</strong> (rash) → cefalosporinas con precaución ✅</div>
+      <div class="warn">Si la alergia fue <strong>GRAVE</strong> (anafilaxia) → cefalosporinas contraindicadas ❌ → usar Aztreonam o Vancomicina</div>
+      <div class="regla">Aztreonam = único betalactámico SIN reactividad cruzada significativa con penicilina</div>`
+    },
+    {
+      badge: 'badge-beta',
+      q: '¿Qué son los Carbapenems? ¿Cuál es su espectro y cuál es el efecto adverso clave del Imipenem?',
+      a: `<strong>Ejemplos:</strong> Imipenem (+ cilastatina), Meropenem, Ertapenem
+      <br><br><strong>Espectro:</strong> El más amplio de todos → Gram+, Gram-, anaerobios. Resistentes a β-lactamasas.
+      <div class="warn">⚠️ NO cubren MRSA → para eso Vancomicina o Ceftarolina</div>
+      <div class="warn">⚠️ ERTAPENEM = único sin cobertura anti-Pseudomonas</div>
+      <div class="highlight"><strong>IMIPENEM + CILASTATINA:</strong> La cilastatina inhibe la dihidropeptidasa renal que degrada al imipenem en el túbulo. Sin ella, el imipenem se inactiva.</div>
+      <div class="warn">⚠️ Imipenem puede causar <strong>CONVULSIONES</strong> → efecto epileptógeno. Meropenem tiene menor riesgo.</div>`
+    },
+    {
+      badge: 'badge-beta',
+      q: '¿Qué es el Aztreonam, qué cubre y cuándo lo usás?',
+      a: `<strong>Aztreonam</strong> = único monobactam disponible
+      <div class="highlight">Cubre SOLO <strong>Gram- AEROBIOS</strong> (incluyendo Pseudomonas, Enterobacterias)</div>
+      <div class="warn">❌ NO cubre Gram+ ni anaerobios</div>
+      <strong>Cuándo usarlo:</strong> Paciente alérgico a penicilina (anafilaxia) con infección por Gram- → sin reactividad cruzada significativa con penicilina
+      <div class="regla">Aztreonam = solo Gram- aerobios → nunca para infecciones por Gram+ ni para NAC</div>`
+    },
+    {
+      badge: 'badge-beta',
+      q: '¿Qué betalactámico usás en infección por BLEE (Betalactamasa de Espectro Extendido)?',
+      a: `<strong>CARBAPENEMS → Imipenem o Meropenem</strong>
+      <div class="highlight">Las BLEE destruyen la mayoría de los betalactámicos → los carbapenems son resistentes a las BLEE → son el tratamiento de elección</div>
+      <div class="regla">BLEE → Carbapenems</div>`
+    },
+    {
+      badge: 'badge-beta',
+      q: '¿Cuál es el único betalactámico que cubre MRSA?',
+      a: `<strong>CEFTAROLINA</strong> → Cefalosporina de 5ta generación
+      <div class="highlight">El MRSA tiene <strong>PBP modificadas (PBP2a)</strong> → los betalactámicos normales no se pueden unir. Ceftarolina tiene alta afinidad por PBP2a → por eso sí funciona.</div>
+      <table class="ans-table">
+        <tr><th>FÁRMACO</th><th>CUBRE MRSA</th></tr>
+        <tr><td>Penicilinas</td><td>❌</td></tr>
+        <tr><td>Cefalosporinas 1-4ta gen</td><td>❌</td></tr>
+        <tr><td>Carbapenems</td><td>❌</td></tr>
+        <tr><td><strong>Ceftarolina (5ta gen)</strong></td><td>✅</td></tr>
+      </table>`
+    },
+    {
+      badge: 'badge-beta',
+      q: 'Paciente alérgico a penicilina (anafilaxia) con infección pulmonar por Pseudomonas. ¿Qué betalactámico usás?',
+      a: `<strong>AZTREONAM</strong>
+      <div class="highlight">✅ Sin reactividad cruzada con penicilina<br>✅ Cubre Gram- aerobios incluyendo Pseudomonas</div>
+      <div class="regla">Alérgico a penicilina + Pseudomonas → Aztreonam</div>`
+    },
+    {
+      badge: 'badge-beta',
+      q: 'Paciente con sífilis primaria. ¿Qué penicilina usás? ¿Y si es alérgica y está embarazada?',
+      a: `<strong>Sífilis primaria → Penicilina G Benzatínica 2.4 millones UI IM dosis única</strong>
+      <div class="highlight">Si es alérgica NO embarazada → <strong>Doxiciclina</strong> 14 días VO</div>
+      <div class="warn">⚠️ Si es alérgica Y EMBARAZADA → <strong>DESENSIBILIZACIÓN A PENICILINA</strong> → no hay alternativa igual de eficaz para el feto</div>`
+    },
+    {
+      badge: 'badge-beta',
+      q: '¿Qué es la Reacción de Jarisch-Herxheimer y cuándo ocurre?',
+      a: `Ocurre al tratar <strong>sífilis</strong> con penicilina.
+      <div class="highlight">Al matar muchos Treponemas de golpe → liberación masiva de endotoxinas → fiebre, escalofríos, hipotensión en las primeras 2-8 horas</div>
+      <div class="warn">⚠️ NO es alergia — es una reacción inflamatoria (anafilactoide)</div>
+      <strong>Manejo:</strong> NO suspender la penicilina → antitérmicos (aspirina) → hidratación → autolimitada en 12-24hs`
+    },
+    {
+      badge: 'badge-beta',
+      q: 'Meningitis bacteriana por Listeria monocytogenes. ¿Por qué no sirven las cefalosporinas?',
+      a: `<strong>Listeria tiene resistencia natural a cefalosporinas</strong> → ninguna generación la cubre.
+      <div class="warn">⚠️ Excepción importante: las cefalosporinas son buenas para meningitis en general pero NO para Listeria</div>
+      <div class="highlight">Tratamiento → <strong>AMPICILINA</strong> (penicilina aminopenicilina)<br>En alérgicos a penicilina → TMP-SMX</div>
+      <div class="regla">Listeria = Gram+ que burla las cefalosporinas → solo la ampicilina la mata</div>`
+    },
+    {
+      badge: 'badge-beta',
+      q: '¿Cuál es el efecto adverso más importante de las penicilinas?',
+      a: `<strong>HIPERSENSIBILIDAD</strong> — la más importante
+      <table class="ans-table">
+        <tr><th>TIPO</th><th>MANIFESTACIÓN</th></tr>
+        <tr><td>Leve</td><td>Rash cutáneo, urticaria</td></tr>
+        <tr><td>Grave</td><td>Anafilaxia → hipotensión, broncoespasmo, angioedema → puede ser mortal</td></tr>
+      </table>
+      <div class="highlight">Tratamiento de anafilaxia → <strong>ADRENALINA IM</strong></div>`
+    },
+    {
+      badge: 'badge-beta',
+      q: 'Meningitis bacteriana — ¿qué cefalosporina usás y por qué? ¿Qué gérmenes adicionales cubrirías?',
+      a: `<strong>Ceftriaxona (3ra gen)</strong> → penetra la BHE cuando hay inflamación meníngea.
+      <div class="highlight">La inflamación de la meningitis aumenta la permeabilidad de la BHE → ceftriaxona aprovecha esto</div>
+      <table class="ans-table">
+        <tr><th>GERMEN ADICIONAL</th><th>COBERTURA EXTRA</th></tr>
+        <tr><td>Listeria (inmunocomp., ancianos, embaraz.)</td><td>Agregar Ampicilina</td></tr>
+        <tr><td>Neumococo resistente</td><td>Agregar Vancomicina</td></tr>
+      </table>`
+    },
+    {
+      badge: 'badge-beta',
+      q: 'Sepsis grave por Klebsiella intrahospitalaria. ¿Qué antibiótico elegís y por qué?',
+      a: `<strong>CARBAPENEMS → Imipenem o Meropenem</strong>
+      <div class="highlight">Klebsiella intrahospitalaria frecuentemente produce BLEE → los carbapenems son resistentes a las BLEE → tratamiento de elección</div>
+      <div class="regla">Infección grave intrahospitalaria por enterobacterias → pensar siempre en Carbapenems</div>`
+    }
+  ],
+
+  gpos: [
+    {
+      badge: 'badge-gpos',
+      q: '¿Cuál es el mecanismo de acción de la Vancomicina y por qué no funciona contra Gram-?',
+      a: `Se une al <strong>D-Ala-D-Ala</strong> del peptidoglucano → bloquea la transpeptidación y transglicosilación → no se forma la pared → <strong>bactericida</strong>.
+      <div class="warn">❌ NO penetra Gram- → la membrana externa de los Gram- actúa como barrera física → la vancomicina es una molécula grande que no puede atravesarla</div>`
+    },
+    {
+      badge: 'badge-gpos',
+      q: '¿Cuáles son los dos usos clínicos más importantes de Vancomicina y qué vía usás en cada uno?',
+      a: `<table class="ans-table">
+        <tr><th>USO</th><th>VÍA</th><th>POR QUÉ</th></tr>
+        <tr><td><strong>MRSA</strong></td><td>EV</td><td>Necesita circulación sistémica</td></tr>
+        <tr><td><strong>C. difficile</strong></td><td>Oral</td><td>No se absorbe → actúa localmente en intestino</td></tr>
+      </table>
+      <div class="warn">⚠️ Vancomicina EV NO sirve para C. difficile → no llega al intestino</div>`
+    },
+    {
+      badge: 'badge-gpos',
+      q: '¿Qué es el Síndrome del Hombre Rojo, cómo ocurre y cómo se previene?',
+      a: `<strong>Síndrome del Hombre Rojo</strong> → eritema en cara, cuello y tórax con prurito.
+      <div class="highlight">Mecanismo: liberación directa de histamina por mastocitos → NO es alergia verdadera → no hay IgE de por medio (reacción anafilactoide)</div>
+      <strong>Causa:</strong> infusión rápida de Vancomicina
+      <strong>Prevención:</strong>
+      <ul style="margin:.5rem 0 0 1rem;font-size:.88rem;">
+        <li>Infusión lenta mínimo <strong>60 minutos</strong></li>
+        <li>Premedicación con <strong>antihistamínicos</strong></li>
+      </ul>`
+    },
+    {
+      badge: 'badge-gpos',
+      q: '¿Cuál es el mecanismo de acción de las Tetraciclinas y por qué están contraindicadas en niños menores de 8 años y embarazadas?',
+      a: `<strong>Mecanismo:</strong> Se unen a la subunidad <strong>30S</strong> → impiden la unión del ARNt al ribosoma → no se sintetizan proteínas → bacteriostáticas.
+      <div class="warn">⚠️ CONTRAINDICADAS en niños < 8 años y embarazadas porque: tienen quelación con calcio → se depositan en <strong>huesos y dientes en formación</strong> → coloración amarillo-marrón permanente + hipoplasia del esmalte + alteración del crecimiento óseo</div>
+      <div class="regla">Tetraciclinas + Calcio → se pegan a huesos y dientes → manchas amarillas</div>`
+    },
+    {
+      badge: 'badge-gpos',
+      q: '¿Cuál es el espectro de las Tetraciclinas? Mencioname los gérmenes más importantes.',
+      a: `<table class="ans-table">
+        <tr><th>CATEGORÍA</th><th>GÉRMENES</th></tr>
+        <tr><td>Atípicos</td><td>Mycoplasma, Chlamydia, Rickettsia</td></tr>
+        <tr><td>Espiroquetas</td><td>Treponema (sífilis en alérgicos), Borrelia (Lyme)</td></tr>
+        <tr><td>Otros</td><td>Brucelosis, Cólera (Vibrio), Acné (Doxiciclina)</td></tr>
+      </table>
+      <div class="regla">Tetraciclinas = Atípicos + Sífilis en alérgicos + Brucelosis + Acné</div>`
+    },
+    {
+      badge: 'badge-gpos',
+      q: '¿Cuál es el mecanismo de acción de los Macrólidos, qué gérmenes cubren y cuál es su uso estrella?',
+      a: `<strong>Mecanismo:</strong> Se unen a la subunidad <strong>50S</strong> → inhiben la translocación → bacteriostáticos (bactericidas a altas concentraciones).
+      <table class="ans-table">
+        <tr><th>ESPECTRO</th><th>GÉRMENES</th></tr>
+        <tr><td>Gram+</td><td>Streptococcus, Staphylococcus sensible</td></tr>
+        <tr><td>Atípicos</td><td><strong>Mycoplasma, Chlamydia, Legionella</strong></td></tr>
+        <tr><td>Otros</td><td>H. pylori (Claritromicina), MAC en VIH (Azitromicina)</td></tr>
+      </table>
+      <div class="regla">Macrólidos = Gram+ + Atípicos → no Gram- entéricos</div>`
+    },
+    {
+      badge: 'badge-gpos',
+      q: 'Diferenciame Eritromicina, Claritromicina y Azitromicina.',
+      a: `<table class="ans-table">
+        <tr><th></th><th>ERITROMICINA</th><th>CLARITROMICINA</th><th>AZITROMICINA</th></tr>
+        <tr><td>Vida media</td><td>Corta (6hs)</td><td>Intermedia (12hs)</td><td>Muy larga (68hs)</td></tr>
+        <tr><td>CYP3A4</td><td>Inhibe</td><td>Inhibe</td><td>No inhibe</td></tr>
+        <tr><td>H. pylori</td><td>No</td><td>✅ Sí</td><td>No</td></tr>
+        <tr><td>GI</td><td>Muy frecuentes (motilina)</td><td>Moderados</td><td>Leves</td></tr>
+        <tr><td>Hepatotox</td><td>Colestásica</td><td>Leve</td><td>No</td></tr>
+      </table>`
+    },
+    {
+      badge: 'badge-gpos',
+      q: '¿Cuál es el esquema de tratamiento de H. pylori?',
+      a: `<strong>TRIPLE TERAPIA POR 14 DÍAS:</strong>
+      <div class="highlight"><strong>Claritromicina + Amoxicilina + IBP (Omeprazol)</strong></div>
+      <table class="ans-table">
+        <tr><th>FÁRMACO</th><th>ROL</th></tr>
+        <tr><td>Claritromicina</td><td>Antibiótico principal contra H. pylori</td></tr>
+        <tr><td>Amoxicilina</td><td>Segundo antibiótico → reduce resistencia</td></tr>
+        <tr><td>IBP (Omeprazol)</td><td>↑ pH gástrico → mejora acción de los antibióticos</td></tr>
+      </table>
+      <div class="warn">⚠️ Si alérgico a Penicilina → reemplazar Amoxicilina por Metronidazol</div>`
+    },
+    {
+      badge: 'badge-gpos',
+      q: '¿Cuál es el mecanismo de acción de la Clindamicina? ¿Cuál es su efecto adverso más importante?',
+      a: `<strong>Mecanismo:</strong> Subunidad <strong>50S</strong> → bacteriostática.
+      <div class="highlight">ESPECTRO: <strong>Gram+ y Anaerobios</strong> — muy buena penetración ósea → ideal en osteomielitis</div>
+      <div class="warn">⚠️ EFECTO ADVERSO MÁS IMPORTANTE: <strong>Colitis pseudomembranosa por C. difficile</strong>
+      <br>Al eliminar la flora normal → C. difficile prolifera → produce toxinas A y B → daña la mucosa intestinal → diarrea profusa, fiebre, dolor abdominal
+      <br>Tratamiento: Metronidazol o Vancomicina oral</div>`
+    },
+    {
+      badge: 'badge-gpos',
+      q: '¿Por qué la Clindamicina es especialmente útil en osteomielitis? ¿Qué otros antibióticos se pueden usar?',
+      a: `Tiene <strong>altísima concentración en hueso y tejidos</strong> → supera a muchos antibióticos en penetración ósea.
+      <div class="highlight">El germen más frecuente en osteomielitis es <strong>Staphylococcus aureus</strong> → Clindamicina lo cubre muy bien</div>
+      <table class="ans-table">
+        <tr><th>ALTERNATIVAS EN OSTEOMIELITIS</th></tr>
+        <tr><td>Cefazolina (1ra gen) → buena cobertura para Staph sensible</td></tr>
+        <tr><td>Oxacilina/Dicloxacilina → penicilinas antiestafilocóccicas</td></tr>
+        <tr><td>Vancomicina → si es MRSA</td></tr>
+      </table>`
+    },
+    {
+      badge: 'badge-gpos',
+      q: '¿Cuál es el mecanismo de acción del Linezolid y en qué se diferencia de Macrólidos y Clindamicina?',
+      a: `Se une a la subunidad <strong>50S</strong> pero en un <strong>sitio diferente</strong> → inhibe la formación del complejo de inicio 70S → no arranca la síntesis proteica → bacteriostático.
+      <div class="highlight">A diferencia de Macrólidos y Clindamicina que detienen la síntesis a mitad del proceso, el Linezolid <strong>impide que arranque</strong></div>
+      <div class="warn">⚠️ Por actuar en sitio diferente → NO hay resistencia cruzada entre ellos</div>`
+    },
+    {
+      badge: 'badge-gpos',
+      q: '¿Cuándo usás Linezolid y cuáles son sus efectos adversos más importantes?',
+      a: `<strong>ESPECTRO:</strong> Gram+ multirresistentes → MRSA, VRE (Enterococo resistente a Vancomicina), Streptococcus resistentes.
+      <div class="highlight">Es un <strong>antibiótico de reserva</strong> → se usa cuando fallan los de primera línea</div>
+      <table class="ans-table">
+        <tr><th>EFECTO ADVERSO</th><th>DETALLE</th></tr>
+        <tr><td><strong>Mielotoxicidad</strong></td><td>Trombocitopenia, anemia → controlar hemograma semanalmente</td></tr>
+        <tr><td><strong>Síndrome serotoninérgico</strong></td><td>Si se combina con ISRS/IMAO → fiebre, agitación, mioclonías</td></tr>
+        <tr><td>Neuropatía periférica</td><td>Tratamientos prolongados</td></tr>
+      </table>
+      <div class="warn">⚠️ NO usar más de 28 días</div>`
+    },
+    {
+      badge: 'badge-gpos',
+      q: '¿En qué se diferencia Vancomicina de Linezolid para tratar MRSA?',
+      a: `<table class="ans-table">
+        <tr><th></th><th>VANCOMICINA</th><th>LINEZOLID</th></tr>
+        <tr><td>Línea</td><td>Primera línea</td><td>Segunda línea</td></tr>
+        <tr><td>Bactericida/Estático</td><td>Bactericida</td><td>Bacteriostático</td></tr>
+        <tr><td>Vía</td><td>EV</td><td>EV y Oral</td></tr>
+        <tr><td>Nefrotoxicidad</td><td>Sí</td><td>No</td></tr>
+        <tr><td>Con ISRS</td><td>Se puede combinar</td><td>Síndrome serotoninérgico</td></tr>
+        <tr><td>IRC</td><td>Ajustar dosis</td><td>Más seguro</td></tr>
+      </table>
+      <div class="regla">Vancomicina = 1ra línea MRSA pero nefrotóxica | Linezolid = alternativa cuando falla Vanco o hay IRC + ISRS</div>`
+    },
+    {
+      badge: 'badge-gpos',
+      q: 'Paciente con MRSA + Insuficiencia Renal + toma Sertralina (ISRS). ¿Qué usás?',
+      a: `<div class="warn">❌ Linezolid → contraindicado con Sertralina (ISRS) → Síndrome Serotoninérgico</div>
+      <div class="warn">⚠️ Vancomicina → nefrotóxica + IRC → riesgo alto, requiere ajuste de dosis y monitoreo</div>
+      <div class="success">✅ MEJOR OPCIÓN: <strong>Ceftarolina</strong> (cefalosporina 5ta gen)
+      → cubre MRSA
+      → sin riesgo serotoninérgico
+      → menos nefrotóxica (aunque también requiere ajuste en IRC)</div>`
+    },
+    {
+      badge: 'badge-gpos',
+      q: 'Infección abdominal con flora mixta (Gram+ y Anaerobios). ¿Qué antibiótico único cubriría ambos?',
+      a: `<strong>CLINDAMICINA</strong>
+      <div class="highlight">Cubre Gram+ y Anaerobios con un solo antibiótico → ideal para infecciones mixtas de piel, tejidos blandos y abscesos pulmonares</div>
+      <div class="warn">⚠️ Para infecciones abdominales graves con Gram- también → agregar Cefalosporina o Aminoglucósido
+      <br>Combinación clásica: <strong>Clindamicina + Gentamicina</strong></div>`
+    },
+    {
+      badge: 'badge-gpos',
+      q: 'Paciente alérgico a Penicilina con anafilaxia tiene faringitis estreptocóccica. ¿Qué usás?',
+      a: `<strong>AZITROMICINA o CLARITROMICINA</strong> (Macrólidos)
+      <div class="highlight">Los macrólidos son la alternativa clásica en alérgicos a penicilina para infecciones por Gram+</div>
+      <div class="regla">Faringitis estreptocóccica → Penicilina V oral (primera línea) → Macrólido si alérgico</div>`
+    }
+  ],
+
+  gneg: [
+    {
+      badge: 'badge-gneg',
+      q: '¿Cuál es el mecanismo de acción de las Quinolonas? ¿Son bactericidas o bacteriostáticas?',
+      a: `Inhiben la <strong>ADN Girasa (Topoisomerasa II)</strong> en Gram- y la <strong>Topoisomerasa IV</strong> en Gram+ → impiden la replicación del ADN bacteriano → <strong>BACTERICIDAS CONCENTRACIÓN-DEPENDIENTES</strong>.
+      <div class="regla">Gram- → ADN Girasa (Topoisomerasa II) | Gram+ → Topoisomerasa IV</div>`
+    },
+    {
+      badge: 'badge-gneg',
+      q: 'Clasificame las Quinolonas por generaciones con espectro.',
+      a: `<table class="ans-table">
+        <tr><th>GENERACIÓN</th><th>EJEMPLO</th><th>ESPECTRO</th></tr>
+        <tr><td>1ra</td><td>Ácido nalidíxico</td><td>Solo Gram- urinarios — casi obsoleto</td></tr>
+        <tr><td>2da</td><td><strong>Ciprofloxacina</strong>, Norfloxacina</td><td>Gram- → mejor anti-Pseudomonas</td></tr>
+        <tr><td>3ra</td><td><strong>Levofloxacina</strong></td><td>Gram+, Gram-, Atípicos → ideal NAC</td></tr>
+        <tr><td>4ta</td><td><strong>Moxifloxacina</strong></td><td>Gram+, Gram-, Atípicos + <strong>Anaerobios</strong></td></tr>
+      </table>
+      <div class="regla">A mayor generación → menos Pseudomonas → más Gram+ y Atípicos | Moxifloxacina = única con anaerobios</div>`
+    },
+    {
+      badge: 'badge-gneg',
+      q: 'Mencioname todos los efectos adversos de las Quinolonas.',
+      a: `<table class="ans-table">
+        <tr><th>EFECTO ADVERSO</th><th>DETALLE</th></tr>
+        <tr><td><strong>Prolongación QT</strong></td><td>Riesgo de Torsades de Pointes → NO combinar con Macrólidos</td></tr>
+        <tr><td><strong>Ruptura de tendón</strong></td><td>Especialmente Aquiles → más en ancianos + corticoides + deportistas</td></tr>
+        <tr><td><strong>Artropatía</strong></td><td>Daño en cartílagos → contraindicadas en niños y embarazadas</td></tr>
+        <tr><td>Efectos SNC</td><td>Convulsiones, mareos, alucinaciones</td></tr>
+        <tr><td>Fotosensibilidad</td><td>Evitar exposición solar</td></tr>
+        <tr><td><strong>Quelación</strong></td><td>Con Al, Mg, Ca, Fe → no tomar con antiácidos ni lácteos</td></tr>
+      </table>`
+    },
+    {
+      badge: 'badge-gneg',
+      q: '¿Cuál es el mecanismo de acción de los Aminoglucósidos? ¿Por qué no funcionan contra anaerobios?',
+      a: `Se unen a la subunidad <strong>30S</strong> → causan <strong>errores en la lectura del ARNm</strong> → se sintetizan proteínas anómalas → <strong>bactericidas concentración-dependientes</strong>.
+      <div class="warn">❌ No funcionan contra anaerobios porque necesitan <strong>transporte activo dependiente de oxígeno</strong> para entrar a la bacteria → en ambientes anaeróbicos no hay O₂ → el antibiótico no puede entrar</div>
+      <div class="regla">Sin O₂ → amino no entra → no mata</div>`
+    },
+    {
+      badge: 'badge-gneg',
+      q: 'Mencioname todos los efectos adversos de los Aminoglucósidos.',
+      a: `<table class="ans-table">
+        <tr><th>EFECTO</th><th>DETALLE</th></tr>
+        <tr><td><strong>Nefrotoxicidad</strong></td><td>Acumulación en túbulo proximal → IRA → potenciada con Vancomicina y AINEs</td></tr>
+        <tr><td><strong>Ototoxicidad</strong></td><td>Coclear (sordera) + Vestibular (vértigo) → <strong>IRREVERSIBLE</strong></td></tr>
+        <tr><td><strong>Bloqueo neuromuscular</strong></td><td>Potencia relajantes musculares → apnea</td></tr>
+        <tr><td>Contraindicado en embarazo</td><td>Ototoxicidad fetal → sordera congénita</td></tr>
+      </table>
+      <div class="regla">Amino → Riñón + Oído + Músculo | Ototoxicidad = IRREVERSIBLE</div>`
+    },
+    {
+      badge: 'badge-gneg',
+      q: '¿Cuál es el mecanismo de acción del TMP-SMX? ¿Por qué es selectivo para bacterias?',
+      a: `Bloqueo <strong>secuencial</strong> de síntesis de folatos:
+      <table class="ans-table">
+        <tr><th>FÁRMACO</th><th>ENZIMA INHIBIDA</th></tr>
+        <tr><td>Sulfametoxazol</td><td>Dihidropteroato sintasa</td></tr>
+        <tr><td>Trimetoprima</td><td>Dihidrofolato reductasa</td></tr>
+      </table>
+      <div class="highlight">Es selectivo porque las <strong>bacterias sintetizan sus propios folatos</strong> → los humanos los obtenemos de la dieta → el TMP-SMX afecta a bacterias y no a nosotros</div>
+      Juntos → <strong>BACTERICIDAS</strong>`
+    },
+    {
+      badge: 'badge-gneg',
+      q: '¿Cuáles son los usos clínicos más importantes del TMP-SMX?',
+      a: `<table class="ans-table">
+        <tr><th>USO</th><th>DETALLE</th></tr>
+        <tr><td><strong>PCP (Pneumocystis jirovecii)</strong></td><td>Profilaxis y tratamiento en VIH — uso estrella</td></tr>
+        <tr><td>ITU no complicada</td><td>Primera línea en muchos casos</td></tr>
+        <tr><td>Nocardia</td><td>De elección</td></tr>
+        <tr><td>Toxoplasma</td><td>Con pirimetamina</td></tr>
+        <tr><td>Listeria</td><td>En alérgicos a penicilina</td></tr>
+      </table>`
+    },
+    {
+      badge: 'badge-gneg',
+      q: '¿Cuál es el mecanismo y los efectos adversos del Cloranfenicol? ¿Por qué se usa poco?',
+      a: `<strong>Mecanismo:</strong> Subunidad <strong>50S</strong> → inhibe la <strong>peptidiltransferasa</strong> → bacteriostático. Amplio espectro: Gram+, Gram-, anaerobios, Rickettsias, Salmonella.
+      <div class="warn">⚠️ EFECTOS ADVERSOS que limitan su uso:
+      <table class="ans-table">
+        <tr><th>EFECTO</th><th>DETALLE</th></tr>
+        <tr><td><strong>Anemia aplásica</strong></td><td>Idiosincrática, IRREVERSIBLE, puede ser fatal</td></tr>
+        <tr><td><strong>Síndrome gris del RN</strong></td><td>Neonatos no pueden metabolizarlo → acumulación → color gris, colapso cardiovascular, muerte</td></tr>
+        <tr><td>Supresión medular</td><td>Dosis dependiente, reversible</td></tr>
+      </table></div>`
+    },
+    {
+      badge: 'badge-gneg',
+      q: 'Paciente con ITU intrahospitalaria que toma antiácidos con Aluminio. Le recetás Ciprofloxacina y a los 5 días no mejora. ¿Qué pasó?',
+      a: `<strong>QUELACIÓN</strong> → los antiácidos con Aluminio se quelan con la Ciprofloxacina en el intestino → no se absorbe → no llega a la orina → <strong>falla terapéutica</strong>.
+      <div class="highlight">Las quinolonas se quelan con cationes divalentes/trivalentes: Al, Mg, Ca, Fe, Zn</div>
+      <strong>Solución:</strong> Tomar la Ciprofloxacina <strong>2 horas antes o 6 horas después</strong> del antiácido`
+    },
+    {
+      badge: 'badge-gneg',
+      q: 'Sepsis grave por Pseudomonas. ¿Qué combinación de antibióticos usás y por qué?',
+      a: `<strong>Betalactámico anti-Pseudomonas + Aminoglucósido</strong>
+      <table class="ans-table">
+        <tr><th>FÁRMACO</th><th>ROL</th></tr>
+        <tr><td>Piperacilina-Tazobactam o Cefepime</td><td>Cobertura amplia anti-Pseudomonas</td></tr>
+        <tr><td>Gentamicina o Amikacina</td><td>Sinergia + mayor potencia bactericida</td></tr>
+      </table>
+      <div class="highlight">Sinergia + dos mecanismos diferentes → previene resistencia</div>
+      <div class="warn">⚠️ Esta combinación aumenta riesgo de <strong>nefrotoxicidad</strong> → monitorear función renal</div>`
+    },
+    {
+      badge: 'badge-gneg',
+      q: 'Paciente con endocarditis por VRE (Enterococo Resistente a Vancomicina). ¿Qué usás?',
+      a: `<strong>LINEZOLID</strong>
+      <div class="highlight">Es una de las indicaciones principales de Linezolid → VRE es resistente a Vancomicina → Linezolid actúa en sitio diferente (50S complejo inicio)</div>
+      <div class="warn">⚠️ Limitación: Linezolid es <strong>bacteriostático</strong> → en endocarditis se prefieren bactericidas → considerar Daptomicina (aunque no siempre disponible)</div>`
+    },
+    {
+      badge: 'badge-gneg',
+      q: 'Paciente joven deportista con infección urinaria por Pseudomonas. ¿Usarías Ciprofloxacina? ¿Qué tenés que tener en cuenta?',
+      a: `<strong>Pensar dos veces</strong> → Ciprofloxacina cubre Pseudomonas pero en un deportista joven el riesgo de <strong>tendinopatía y ruptura del tendón de Aquiles</strong> es especialmente importante.
+      <div class="warn">⚠️ Factores de riesgo para ruptura de tendón: edad avanzada, uso de corticoides, actividad física intensa → en un deportista es especialmente riesgoso</div>
+      <strong>Alternativas:</strong> Aminoglucósidos, Piperacilina-Tazobactam según gravedad`
+    }
+  ],
+
+  tbc: [
+    {
+      badge: 'badge-tbc',
+      q: '¿Cuál es el esquema de tratamiento de la TBC? Fases, fármacos y duración.',
+      a: `<table class="ans-table">
+        <tr><th>FASE</th><th>DURACIÓN</th><th>FÁRMACOS</th></tr>
+        <tr><td><strong>Intensiva</strong></td><td>2 meses</td><td>HRZE → Isoniacida + Rifampicina + Pirazinamida + Etambutol</td></tr>
+        <tr><td><strong>Mantenimiento</strong></td><td>4 meses</td><td>HR → Isoniacida + Rifampicina</td></tr>
+      </table>
+      <div class="highlight">Duración total: <strong>6 meses</strong></div>
+      <div class="regla">RIPE 2 meses → RI 4 meses</div>`
+    },
+    {
+      badge: 'badge-tbc',
+      q: '¿Por qué en TBC siempre se usan combinaciones y nunca monoterapia?',
+      a: `<table class="ans-table">
+        <tr><th>POBLACIÓN BACILAR</th><th>DÓNDE ESTÁ</th><th>FÁRMACO IDEAL</th></tr>
+        <tr><td>Extracelular activa</td><td>Cavernas pulmonares</td><td>Rifampicina + Isoniacida</td></tr>
+        <tr><td>Intracelular</td><td>Dentro de macrófagos</td><td>Pirazinamida</td></tr>
+        <tr><td>Latente/durmiente</td><td>Lesiones caseosas</td><td>Rifampicina</td></tr>
+      </table>
+      <div class="warn">⚠️ Monoterapia en TBC = resistencia asegurada + recaída</div>`
+    },
+    {
+      badge: 'badge-tbc',
+      q: '¿Cuál es el efecto adverso más importante de la Isoniacida y cómo se previene?',
+      a: `<strong>Neuropatía periférica</strong> → por déficit de <strong>Vitamina B6 (Piridoxina)</strong>.
+      <div class="highlight">Mecanismo: Isoniacida interfiere con el metabolismo de la B6 → déficit de B6 → no se sintetizan neurotransmisores → neuropatía periférica</div>
+      <strong>Prevención:</strong> Dar siempre <strong>Vitamina B6</strong> junto con Isoniacida
+      <br>Especialmente en: embarazadas, alcohólicos, diabéticos, desnutridos
+      <div class="warn">⚠️ Otros efectos: Hepatotoxicidad + Lupus inducido por fármacos</div>
+      <div class="regla">Isoniacida → siempre con B6 → para prevenir neuropatía</div>`
+    },
+    {
+      badge: 'badge-tbc',
+      q: '¿Cuáles son los efectos adversos de cada fármaco del esquema RIPE?',
+      a: `<table class="ans-table">
+        <tr><th>FÁRMACO</th><th>EFECTO ADVERSO CLAVE</th></tr>
+        <tr><td><strong>Rifampicina (R)</strong></td><td>Orina naranja-rojiza + Inductor CYP450 (↓ anticonceptivos, warfarina, ARV)</td></tr>
+        <tr><td><strong>Isoniacida (H)</strong></td><td>Neuropatía periférica → dar B6 | Hepatotoxicidad | Lupus inducido</td></tr>
+        <tr><td><strong>Pirazinamida (Z)</strong></td><td>Hiperuricemia → Gota — peligroso en pacientes con gota crónica</td></tr>
+        <tr><td><strong>Etambutol (E)</strong></td><td>Neuritis óptica → pérdida de agudeza visual + alteración discriminación rojo-verde → REVERSIBLE si se suspende a tiempo</td></tr>
+      </table>
+      <div class="regla">R=naranja | H=neuropatía | Z=gota | E=ojos</div>`
+    },
+    {
+      badge: 'badge-tbc',
+      q: '¿Cuál es la diferencia entre TBC Latente y TBC Activa?',
+      a: `<table class="ans-table">
+        <tr><th></th><th>LATENTE</th><th>ACTIVA</th></tr>
+        <tr><td>Bacilos</td><td>Dormidos</td><td>Se replican activamente</td></tr>
+        <tr><td>Síntomas</td><td>❌ Ninguno</td><td>✅ Tos, fiebre, sudoración nocturna, pérdida de peso</td></tr>
+        <tr><td>Contagioso</td><td>❌ No contagia</td><td>✅ Sí contagia</td></tr>
+        <tr><td>Radiografía</td><td>✅ Normal</td><td>❌ Infiltrados, cavernas</td></tr>
+        <tr><td>BAAR en esputo</td><td>❌ Negativo</td><td>✅ Positivo</td></tr>
+        <tr><td>PPD</td><td>✅ Positivo</td><td>✅ Positivo</td></tr>
+        <tr><td>Tratamiento</td><td>Isoniacida sola 6-9 meses</td><td>RIPE + RI</td></tr>
+      </table>
+      <div class="regla">Latente = infectado pero sin enfermedad, no contagia | Activa = enfermo, contagia</div>`
+    },
+    {
+      badge: 'badge-tbc',
+      q: '¿Cuál es el tratamiento de la TBC latente?',
+      a: `<strong>ISONIACIDA SOLA × 6-9 MESES</strong>
+      <table class="ans-table">
+        <tr><th>SITUACIÓN</th><th>TRATAMIENTO</th></tr>
+        <tr><td>TBC latente (estándar)</td><td><strong>Isoniacida sola × 6-9 meses</strong></td></tr>
+        <tr><td>Alternativa</td><td>Rifampicina sola × 4 meses</td></tr>
+        <tr><td>TBC activa</td><td>RIPE × 2m → RI × 4m</td></tr>
+      </table>
+      <div class="warn">⚠️ ERROR FRECUENTE: No usar Rifampicina de rutina en la latente → es para la activa</div>`
+    },
+    {
+      badge: 'badge-tbc',
+      q: '¿Qué es la MDR-TB y la XDR-TB? ¿Cuál es la causa más frecuente de resistencia?',
+      a: `<table class="ans-table">
+        <tr><th>TIPO</th><th>DEFINICIÓN</th><th>TRATAMIENTO</th></tr>
+        <tr><td><strong>MDR-TB</strong></td><td>Resistente a Rifampicina + Isoniacida</td><td>Quinolonas + Aminoglucósidos + Linezolid × 18-24 meses</td></tr>
+        <tr><td><strong>XDR-TB</strong></td><td>MDR + resistente a Quinolonas + Aminoglucósidos</td><td>Muy difícil de tratar → alta mortalidad</td></tr>
+      </table>
+      <div class="warn">⚠️ CAUSA MÁS FRECUENTE DE RESISTENCIA: <strong>Abandono del tratamiento</strong> → selecciona bacilos resistentes → problema de salud pública</div>
+      <div class="regla">MDR = resistente a R + H | XDR = MDR + quinolonas + aminoglucósidos</div>`
+    },
+    {
+      badge: 'badge-tbc',
+      q: 'Paciente en tratamiento con Rifampicina toma anticonceptivos orales. ¿Qué problema puede surgir?',
+      a: `<strong>FALLA ANTICONCEPTIVA</strong> → riesgo de embarazo no deseado.
+      <div class="warn">⚠️ Rifampicina es potente <strong>inductor del CYP450</strong> → aumenta el metabolismo de los anticonceptivos → bajan sus niveles plasmáticos → efecto anticonceptivo reducido</div>
+      <strong>Qué hacer:</strong>
+      <ul style="margin:.5rem 0 0 1rem;font-size:.88rem;">
+        <li>Informar a la paciente del riesgo</li>
+        <li>Cambiar a otro método anticonceptivo (preservativo, DIU)</li>
+        <li>O aumentar dosis del anticonceptivo bajo supervisión</li>
+      </ul>
+      <div class="regla">Rifampicina reduce niveles de: Anticonceptivos, Warfarina, ARV, Corticoides, Digoxina</div>`
+    }
+  ],
+
+  ea: [
+    {
+      badge: 'badge-ea',
+      q: 'Resumen integrador — Efectos adversos de Betalactámicos.',
+      a: `<table class="ans-table">
+        <tr><th>FÁRMACO</th><th>EFECTO ADVERSO CLAVE</th></tr>
+        <tr><td>Todas las Penicilinas</td><td>Hipersensibilidad / Anafilaxia</td></tr>
+        <tr><td>Penicilina en sífilis</td><td>Jarisch-Herxheimer</td></tr>
+        <tr><td>Imipenem</td><td>Convulsiones (efecto epileptógeno)</td></tr>
+        <tr><td>Ceftriaxona</td><td>Pseudocolelitiasis (eliminación biliar)</td></tr>
+        <tr><td>Aztreonam</td><td>Sin reactividad cruzada con penicilina</td></tr>
+        <tr><td>Carbapenems</td><td>No cubren MRSA (no es EA pero es error frecuente)</td></tr>
+      </table>`
+    },
+    {
+      badge: 'badge-ea',
+      q: 'Resumen integrador — Efectos adversos de antibióticos Gram+.',
+      a: `<table class="ans-table">
+        <tr><th>ANTIBIÓTICO</th><th>EFECTO ADVERSO CLAVE</th></tr>
+        <tr><td>Vancomicina</td><td>Síndrome hombre rojo + Nefrotoxicidad + Ototoxicidad</td></tr>
+        <tr><td>Tetraciclinas</td><td>Dientes amarillos + Huesos en niños + Fotosensibilidad + Teratogénico</td></tr>
+        <tr><td>Eritromicina</td><td>GI (Motilina) + Hepatotoxicidad colestásica + CYP3A4</td></tr>
+        <tr><td>Todos Macrólidos</td><td>Prolongación QT</td></tr>
+        <tr><td>Clindamicina</td><td>Colitis pseudomembranosa por C. difficile</td></tr>
+        <tr><td>Linezolid</td><td>Mielotoxicidad + Síndrome serotoninérgico (ISRS/IMAO)</td></tr>
+      </table>`
+    },
+    {
+      badge: 'badge-ea',
+      q: 'Resumen integrador — Efectos adversos de antibióticos Gram-.',
+      a: `<table class="ans-table">
+        <tr><th>ANTIBIÓTICO</th><th>EFECTO ADVERSO CLAVE</th></tr>
+        <tr><td>Quinolonas</td><td>QT + Ruptura tendón (Aquiles) + Artropatía niños + Convulsiones + Quelación</td></tr>
+        <tr><td>Aminoglucósidos</td><td>Nefrotoxicidad + Ototoxicidad IRREVERSIBLE + Bloqueo NM</td></tr>
+        <tr><td>TMP-SMX</td><td>Discrasias sanguíneas + Stevens-Johnson + Contraindicado embarazo</td></tr>
+        <tr><td>Cloranfenicol</td><td>Anemia aplásica IRREVERSIBLE + Síndrome gris del RN</td></tr>
+      </table>`
+    },
+    {
+      badge: 'badge-ea',
+      q: '¿Qué antibióticos producen ototoxicidad? ¿Cuál es irreversible?',
+      a: `<table class="ans-table">
+        <tr><th>FÁRMACO</th><th>TIPO DE DAÑO</th><th>REVERSIBILIDAD</th></tr>
+        <tr><td><strong>Aminoglucósidos</strong></td><td>Coclear (sordera) + Vestibular (vértigo)</td><td><strong>IRREVERSIBLE</strong></td></tr>
+        <tr><td>Vancomicina</td><td>Coclear principalmente</td><td>Reversible si se suspende</td></tr>
+        <tr><td>Eritromicina</td><td>Solo a dosis muy altas</td><td>Reversible</td></tr>
+      </table>
+      <div class="warn">⚠️ COMBINACIÓN PELIGROSA: Aminoglucósidos + Furosemida → doble ototoxicidad</div>
+      <div class="regla">Ototóxicos = Aminoglucósidos (irreversible) + Vancomicina</div>`
+    },
+    {
+      badge: 'badge-ea',
+      q: '¿Qué antibióticos producen nefrotoxicidad y qué combinación es la más peligrosa?',
+      a: `<table class="ans-table">
+        <tr><th>FÁRMACO</th><th>MECANISMO</th></tr>
+        <tr><td>Aminoglucósidos</td><td>Acumulación en túbulo proximal</td></tr>
+        <tr><td>Vancomicina</td><td>Daño tubular directo</td></tr>
+        <tr><td>TMP-SMX</td><td>Cristaluria</td></tr>
+      </table>
+      <div class="warn">⚠️ COMBINACIÓN MÁS PELIGROSA: Vancomicina + Aminoglucósidos → doble nefrotoxicidad sinérgica → IRA</div>
+      <div class="regla">Los 3 grandes nefroototóxicos: Vancomicina + Aminoglucósidos + Cisplatino</div>`
+    },
+    {
+      badge: 'badge-ea',
+      q: '¿Qué antibióticos prolongan el QT y qué combinación es especialmente peligrosa?',
+      a: `<table class="ans-table">
+        <tr><th>FÁRMACO</th></tr>
+        <tr><td>Todos los Macrólidos (especialmente Eritromicina)</td></tr>
+        <tr><td>Quinolonas (especialmente Moxifloxacina)</td></tr>
+      </table>
+      <div class="warn">⚠️ COMBINACIÓN MÁS PELIGROSA: Macrólido + Quinolona → doble prolongación QT → Torsades de Pointes → muerte súbita</div>
+      <div class="regla">QT prolongado → no combinar Macrólidos con Quinolonas</div>`
+    },
+    {
+      badge: 'badge-ea',
+      q: '¿Qué antibióticos tienen efectos adversos sobre la médula ósea?',
+      a: `<table class="ans-table">
+        <tr><th>FÁRMACO</th><th>EFECTO</th><th>TIPO</th></tr>
+        <tr><td><strong>Cloranfenicol</strong></td><td>Anemia aplásica</td><td>Idiosincrática, IRREVERSIBLE, fatal</td></tr>
+        <tr><td>Cloranfenicol</td><td>Supresión medular</td><td>Dosis dependiente, reversible</td></tr>
+        <tr><td><strong>Linezolid</strong></td><td>Trombocitopenia, anemia</td><td>Dosis dependiente → controlar hemograma</td></tr>
+        <tr><td>TMP-SMX</td><td>Anemia megaloblástica, agranulocitosis</td><td>Por bloqueo de folatos</td></tr>
+      </table>`
+    },
+    {
+      badge: 'badge-ea',
+      q: 'Mencioname todos los antibióticos contraindicados en niños y por qué.',
+      a: `<table class="ans-table">
+        <tr><th>ANTIBIÓTICO</th><th>POR QUÉ</th></tr>
+        <tr><td><strong>Tetraciclinas</strong></td><td>Depósito en huesos y dientes en formación → manchas + hipoplasia</td></tr>
+        <tr><td><strong>Quinolonas</strong></td><td>Artropatía → daño en cartílagos en crecimiento</td></tr>
+        <tr><td><strong>Cloranfenicol en neonatos</strong></td><td>Síndrome gris → no pueden metabolizarlo → colapso cardiovascular</td></tr>
+      </table>
+      <div class="regla">Niños → no Tetraciclinas (< 8 años) ni Quinolonas (adolescentes) | Neonatos → no Cloranfenicol</div>`
+    },
+    {
+      badge: 'badge-ea',
+      q: '¿Qué antibióticos pueden causar colitis por C. difficile y cómo se trata?',
+      a: `<strong>Los que más la generan:</strong>
+      <table class="ans-table">
+        <tr><th>ANTIBIÓTICO</th></tr>
+        <tr><td><strong>Clindamicina</strong> → el más asociado</td></tr>
+        <tr><td>Ampicilina / Amoxicilina</td></tr>
+        <tr><td>Cefalosporinas (especialmente 3ra gen)</td></tr>
+        <tr><td>Quinolonas</td></tr>
+      </table>
+      <div class="highlight">TRATAMIENTO:
+      <br>• Leve-moderado → <strong>Metronidazol VO</strong>
+      <br>• Grave → <strong>Vancomicina VO</strong>
+      <br>• Suspender el antibiótico causal</div>`
+    },
+    {
+      badge: 'badge-ea',
+      q: 'Paciente que toma Linezolid consulta porque empezó Fluoxetina (ISRS) para depresión. ¿Qué problema puede ocurrir?',
+      a: `<strong>SÍNDROME SEROTONINÉRGICO</strong>
+      <div class="warn">⚠️ Linezolid inhibe la MAO → combinado con ISRS (Fluoxetina) → acumulación de serotonina → Síndrome Serotoninérgico</div>
+      <strong>Manifestaciones:</strong> Fiebre, agitación, mioclonías, confusión, taquicardia → puede ser fatal
+      <strong>Qué hacer:</strong>
+      <ul style="margin:.5rem 0 0 1rem;font-size:.88rem;">
+        <li>Suspender una de las dos drogas</li>
+        <li>Si necesita antibiótico → cambiar a Vancomicina o Ceftarolina</li>
+        <li>Si puede esperar → suspender Fluoxetina 2 semanas antes de iniciar Linezolid</li>
+      </ul>`
+    }
+  ]
+};
+
+function buildCards(containerId, questions) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  questions.forEach((item, index) => {
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.innerHTML = `
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num">Q${String(index + 1).padStart(2, '0')}</div>
+        <div class="q-text">
+          <span class="badge ${item.badge}">${item.badge.replace('badge-', '').toUpperCase()}</span><br>
+          ${item.q}
+        </div>
+        <div class="q-arrow">▼</div>
+      </div>
+      <div class="q-answer">
+        <div class="answer-content">${item.a}</div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function toggleCard(header) {
+  const card = header.parentElement;
+  card.classList.toggle('open');
+}
+
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Build all cards
+buildCards('q-generales', data.generales);
+buildCards('q-beta', data.beta);
+buildCards('q-gpos', data.gpos);
+buildCards('q-gneg', data.gneg);
+buildCards('q-tbc', data.tbc);
+buildCards('q-ea', data.ea);
+
+// Count total
+const total = Object.values(data).reduce((acc, arr) => acc + arr.length, 0);
+document.getElementById('total-count').textContent = total;
+</script>
+</body>
+</html>
